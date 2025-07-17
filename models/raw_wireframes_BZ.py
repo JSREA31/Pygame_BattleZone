@@ -1389,6 +1389,10 @@ characterset.append([[16,12,0],
 characterset.append([[16,0,12],
                     [8,0,0]])
 
+#,
+characterset.append([[8,-8,0],
+                    [8,8,12]])
+
 
 ####################################################
 ##           BattleZone title screen logo        

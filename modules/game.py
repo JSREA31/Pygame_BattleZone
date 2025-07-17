@@ -45,11 +45,11 @@ class Game:
         pygame.init()
         
         self.sound_on = True
-        self.sound_text = "SOUND IS ON   M TO MUTE"
+        self.sound_text = "SOUND IS ON; M TO MUTE"
         self.sounds_init()
 
         self.render_style = self.STYLE_SHADED
-        self.render_style_text = "SHADING  R TO CHANGE"
+        self.render_style_text = "SHADING; R TO CHANGE"
 
         self.height = height
         self.width = width
@@ -109,8 +109,8 @@ class Game:
         self.max_tanks = 1
 
         self.end_screen=False
-        
-
+        self.scroll_text = "ARROW KEYS TO MOVE; SPACE TO FIRE; P TO PAUSE; M TO MUTE; R TO CHANGE RENDER STYLE"
+        self.scroll_pos = 0
         self.start_time = time.time()
     
 
@@ -195,8 +195,8 @@ class Game:
                     self.player.mvright = True
                 else:    
                     self.get_input()
-                    self.render_vector_text(self.sound_text,10,self.height-10,0.35,(0,255,0))
-                    self.render_vector_text(self.render_style_text,self.width-350,self.height-10,0.35,(0,255,0))
+                    self.render_vector_text(self.sound_text,10,self.height-10,0.4,(0,255,0))
+                    self.render_vector_text(self.render_style_text,self.width-350,self.height-10,0.4,(0,255,0))
 
                 self.player.update_player(
                     self.objects, self.event_list, self.view_center)
@@ -862,12 +862,12 @@ class Game:
                 elif event.key == pygame.K_m:
                     self.sound_on = not self.sound_on
                     if self.sound_on:
-                        self.sound_text = "SOUND IS ON M TO MUTE"
+                        self.sound_text = "SOUND IS ON; M TO MUTE"
                         self.channel_10.play(self.ambient_sound, loops=-1)
                         self.channel_7.set_volume(0.0,0.0)
                         self.channel_7.play(self.tank_sound, loops=-1)
                     else: 
-                       self.sound_text = "SOUND IS OFF M TO UNMUTE"
+                       self.sound_text = "SOUND IS OFF; M TO UNMUTE"
                        pygame.mixer.fadeout(1000)    
                 elif event.key == pygame.K_r:
                     self.render_style+= 1
@@ -881,7 +881,7 @@ class Game:
                         self.render_style_text = "HIDDEN LINE REMOVAL"
                     elif self.render_style == self.STYLE_WF:
                         self.render_style_text = "SIMPLE VECTOR"
-                    self.render_style_text += "   R TO CHANGE"        
+                    self.render_style_text += "; R TO CHANGE"        
         if keys[pygame.K_UP]:   
             self.player.mvfwd = True
         elif keys[pygame.K_DOWN]:
@@ -1371,6 +1371,18 @@ class Game:
                     y_start = yend
 
             x_start = x+(i*pixelsize)
+    
+    ################################################################
+    # display_scroll_text
+    # scrolling instructions for title screen
+    ################################################################
+    def display_scroll_text(self):
+        size = 0.6
+        y = self.height - 10
+        text_length = len(self.scroll_text) * 24 * size
+        x = self.width - (self.scroll_pos % (text_length + self.width))
+        self.render_vector_text(self.scroll_text, x, y, size, (0, 255, 0))
+        self.scroll_pos += 3
 
 
     ################################################################
@@ -1531,6 +1543,7 @@ class Game:
         self.player.pRotSpeed=0.001
 
         self.plot_logo()
+        self.display_scroll_text()
         
         self.color_counter+=self.color_increment
         if self.color_counter==255 or self.color_counter==100:
